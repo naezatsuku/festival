@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>タイマー</title>
+</head>
+<body class="cont">
+    <button id="startButton" class="btn btn--orange btn--circle btn--circle-a btn--shadow">タイマー開始</button>
+    <div id="timerDisplay">10:00</div>
+
+    <script>
+        function startTimer() {
+            document.getElementById("startButton").style.display="none";
+            document.getElementById("timerDisplay").style.display="flex";
+            const startTime = new Date();
+            localStorage.setItem('startTime', startTime);
+            updateTimer();
+        }
+
+        function updateTimer() {
+            const startTime = new Date(localStorage.getItem('startTime'));
+            const currentTime = new Date();
+            const timeDifference = 10 * 60 * 1000 - (currentTime - startTime);
+
+            if (timeDifference <= 0) {
+                document.getElementById('timerDisplay').innerText = 'タイムアップ！';
+                clearInterval(timerInterval);
+                localStorage.removeItem('startTime');
+            } else {
+                const minutes = Math.floor(timeDifference / 1000 / 60);
+                const seconds = Math.floor((timeDifference / 1000) % 60);
+                document.getElementById('timerDisplay').innerText = ` ${minutes}: ${seconds}`;
+            }
+        }
+
+        document.getElementById('startButton').addEventListener('click', function() {
+            startTimer();
+            timerInterval = setInterval(updateTimer, 1000);
+        });
+
+        let timerInterval;
+        if (localStorage.getItem('startTime')) {
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+    </script>
+    <style>
+        .cont{
+            display: flex;
+            text-align: center;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+       /*主な共通部分は省略*/
+#startButton{
+    display: flex;
+    font-size:3em;
+}
+button.btn--orange {
+  color: #fff;
+  background-color: #eb6100;
+}
+
+button.btn--orange:hover {
+  color: #fff;
+  background: #f56500;
+}
+
+button.btn--shadow {
+  -webkit-box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+}
+
+button.btn--circle {
+  border-radius: 50%;
+  line-height: 300px;
+  width: 300px;
+  height: 300px;
+  padding: 0;
+}
+        #timerDisplay{
+            display: none;
+           font-size: 6em;
+           font-weight: lighter;
+        }
+    </style>
+</body>
+</html>
+
